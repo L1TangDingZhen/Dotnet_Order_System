@@ -1,0 +1,108 @@
+.table-container {
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .tables {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  
+  .table {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100px;
+    height: 100px; /* 保持正方形 */
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white; /* 默认字体颜色为白色 */
+  }
+  
+  .available {
+    background-color: #28a745; /* 绿色背景 */
+  }
+  
+  .unavailable {
+    background-color: #dc3545; /* 红色背景 */
+  }
+  
+  .add-table {
+    cursor: pointer;
+    font-size: 24px;
+    color: #007bff;
+    border: 1px dashed #007bff;
+  }
+  
+  .add-table:hover {
+    background-color: #f0f8ff;
+  }
+  
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .add-table-form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    width: 300px;
+    text-align: center;
+    animation: fadeIn 0.5s;
+  }
+  
+  .add-table-form input[type="text"] {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+  
+  .add-table-form .button-group {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .add-table-form button {
+    padding: 5px 10px;
+    font-size: 14px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 5px;
+  }
+  
+  .add-table-form button:hover {
+    background-color: #0056b3;
+  }
+  
+  .add-table-form label {
+    color: black;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  

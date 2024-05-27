@@ -1,0 +1,68 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: transparent;
+  padding: 10px ;
+  /* padding: 10px 20px; */
+  width: 98%;
+  box-sizing: border-box;
+}
+
+.menu-icon, .cart-icon, title {
+  font-size: 2rem;
+  cursor: pointer;
+
+}
+
+.title {
+  flex-grow: 1;
+  font-size: 1.5rem;
+  text-align: left; /* 居中显示标题 */
+  margin: 0 20px; /* 为标题两侧添加一些间距 */
+}
+
+.order-page {
+  background-color: #1e1e1e;
+  color: #fff;
+  min-height: 600vh; /* 确保占据整个视口的高度 */
+  width: 100%; /* 占据整个视口的宽度 */
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px ; /* 添加内边距 */
+  width: 97%; /* 可以根据需要调整 */
+  margin: 0 auto; /* 使搜索框居中 */
+  box-sizing: border-box;
+
+}
+
+.search-icon {
+  margin-right: 10px; /* 图标与输入框之间的间距 */
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  flex: 1; /* 使输入框占据剩余空间 */
+  font-size: 1rem;
+}
+
+/* .order-page {
+  background-color: #1e1e1e;
+  color: #fff;
+  min-height: 100vh;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+} */

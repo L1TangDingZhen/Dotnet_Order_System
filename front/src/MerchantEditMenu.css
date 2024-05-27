@@ -1,0 +1,94 @@
+.merchant-edit-menu-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .menu-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .menu-item, .add-menu-button {
+    width: 180px; /* 调整宽度 */
+    height: 180px; /* 调整高度 */
+    border: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: #1e1e1e;
+    color: #fff;
+  }
+  
+  .menu-item:hover, .add-menu-button:hover {
+    border-color: #007bff;
+  }
+  
+  .menu-item h3, .menu-item p {
+    margin: 5px 0;
+  }
+  
+  .add-menu-button p {
+    font-size: 3rem;
+    margin: 0;
+  }
+  
+  .overlay, .menu-detail-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .menu-form, .menu-detail {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    color: #000; /* 确保字体颜色为黑色 */
+  }
+  
+  .menu-form input, .menu-form textarea, .menu-detail img, .menu-detail p {
+    margin-bottom: 10px;
+  }
+  
+  .menu-form input, .menu-form textarea {
+    color: #000; /* 确保输入框内的文字颜色为黑色 */
+  }
+  
+  .menu-detail img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .button-group button {
+    flex: 1;
+    margin: 5px;
+    padding: 10px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .button-group button:hover {
+    background-color: #0056b3;
+  }
+  
