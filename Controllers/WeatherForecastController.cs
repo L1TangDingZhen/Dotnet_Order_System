@@ -34,5 +34,18 @@ namespace Order.Controllers
             })
             .ToArray();
         }
+
+        [HttpPost("add")]
+        public IActionResult Add([FromBody] AddRequest request)
+        {
+            double result = request.A + request.B;
+            return Ok(result);
+        }
+
+        public class AddRequest
+        {
+            public double A { get; set; }
+            public double B { get; set; }
+        }
     }
 }

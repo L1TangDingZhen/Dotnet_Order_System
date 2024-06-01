@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Order.Controllers
 {
-    [ApiController]
+    //[ApiController]
     [Route("api/merchant/order")]
     public class MerchantOrderController : ControllerBase
     {
@@ -28,25 +28,39 @@ namespace Order.Controllers
 
         // GET: api/merchant/order/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<OrderItem>> GetOrder(int id)
+        public async Task<ActionResult<OrderItem>> GetOrderById(int id)
         {
-            var order = await _context.OrderItems.Include(o => o.Menu).FirstOrDefaultAsync(o => o.Id == id);
-            if (order == null)
+            var orderItem = await _context.OrderItems.Include(o => o.Menu).FirstOrDefaultAsync(o => o.Id == id);
+
+            if (orderItem == null)
             {
                 return NotFound();
             }
-            return order;
+
+            return orderItem;
         }
 
-        // PUT: api/merchant/order/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateOrder(int id, OrderItem order)
+        // POST: api/merchant/order
+        [HttpPost]
+        public async Task<ActionResult<OrderItem>> Create(OrderItem orderItem)
         {
-            if (id != order.Id)
+            _context.OrderItems.Add(orderItem);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetOrderById), new { id = orderItem.Id }, orderItem);
+        }
+
+        // PUT: api/merchant/order/update/{id}
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> Update(int id, OrderItem orderItem)
+        {
+            if (id != orderItem.Id)
             {
                 return BadRequest();
             }
-            _context.Entry(order).State = EntityState.Modified;
+
+            _context.Entry(orderItem).State = EntityState.Modified;
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -62,72 +76,56 @@ namespace Order.Controllers
                     throw;
                 }
             }
+
             return NoContent();
         }
 
-        // DELETE: api/merchant/order/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(int id)
+        // DELETE: api/merchant/order/delete/{id}]
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            var order = await _context.OrderItems.FindAsync(id);
-            if (order == null)
+            var orderItem = await _context.OrderItems.FindAsync(id);
+            if (orderItem == null)
             {
                 return NotFound();
             }
-            _context.OrderItems.Remove(order);
+
+            _context.OrderItems.Remove(orderItem);
             await _context.SaveChangesAsync();
+
             return NoContent();
         }
 
-        // GET: api/merchant/order/table/{tableNumber}
-        [HttpGet("table/{tableNumber}")]
-        public async Task<ActionResult<IEnumerable<OrderItem>>> GetOrdersByTable(int tableNumber)
+        // PUT: api/merchant/order/{id}/pay
+        [HttpPut("{id}/pay")]
+        public async Task<IActionResult> Pay(int id)
         {
-            var orders = await _context.OrderItems.Include(o => o.Menu).Where(o => o.TableNumber == tableNumber && !o.IsPaid).ToListAsync();
-            if (orders == null || orders.Count == 0)
-            {
-                return NotFound();
-            }
-            return orders;
-        }
-
-        // POST: api/merchant/order/settle/{tableNumber}
-        [HttpPost("settle/{tableNumber}")]
-        public async Task<IActionResult> SettleTable(int tableNumber)
-        {
-            var orders = await _context.OrderItems.Where(o => o.TableNumber == tableNumber && !o.IsPaid).ToListAsync();
-            if (orders == null || orders.Count == 0)
+            var orderItem = await _context.OrderItems.FindAsync(id);
+            if (orderItem == null)
             {
                 return NotFound();
             }
 
-            foreach (var order in orders)
-            {
-                order.IsPaid = true;
-            }
-
+            orderItem.IsPaid = true;
             await _context.SaveChangesAsync();
+
             return NoContent();
         }
 
-        // GET: api/merchant/order/unpaid
-        [HttpGet("unpaid")]
-        public async Task<ActionResult<IEnumerable<OrderItem>>> GetUnpaidOrders()
+        // DELETE: api/merchant/order/cancel/{id}
+        [HttpDelete("cancel/{id}")]
+        public async Task<IActionResult> Cancel(int id)
         {
-            var orders = await _context.OrderItems.Include(o => o.Menu).Where(o => !o.IsPaid).ToListAsync();
-            return orders;
-        }
-
-        // GET: api/merchant/order/table/unpaid/{tableNumber}
-        [HttpGet("table/unpaid/{tableNumber}")]
-        public async Task<ActionResult<IEnumerable<OrderItem>>> GetOrderByTable(int tableNumber)
-        {
-            var orders = await _context.OrderItems.Include(o => o.Menu).Where(o => o.TableNumber == tableNumber && !o.IsPaid).ToListAsync();
-            if (orders == null || orders.Count == 0)
+            var orderItem = await _context.OrderItems.FindAsync(id);
+            if (orderItem == null)
             {
                 return NotFound();
             }
-            return orders;
+
+            _context.OrderItems.Remove(orderItem);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

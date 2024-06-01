@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Order.Models;
 
 namespace Order.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -12,6 +14,8 @@ namespace Order.Data
 
         public DbSet<Menu> Menus { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Table> Tables { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -19,7 +23,15 @@ namespace Order.Data
 
             modelBuilder.Entity<OrderItem>(entity =>
             {
-                entity.ToTable("Orders"); // 将表名配置为 Orders
+                entity.ToTable("Orders");
+                entity.HasOne(o => o.Table)
+                      .WithMany()
+                      .HasForeignKey(o => o.TableId);
+            });
+
+            modelBuilder.Entity<Table>(entity =>
+            {
+                entity.ToTable("Tables");
             });
         }
     }

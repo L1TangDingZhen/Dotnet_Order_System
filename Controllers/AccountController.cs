@@ -1,71 +1,65 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using System.Threading.Tasks;
+using Order.Models;
+using Order.Data;
+
 
 namespace Order.Controllers
 {
-    [Route("account")]
-    public class AccountController : Controller
+    [ApiController]
+    [Route("api/account")]
+    [EnableCors("AllowAllOrigins")] // 添加 CORS 策略
+
+    public class AccountController : ControllerBase
     {
-        // 显示登录页面
-        [HttpGet("login")]
-        public IActionResult Login()
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
+
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
-            return View();
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
-        // 处理登录请求
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(string username, string password)
-        {
-            // 这里您应该添加实际的用户验证逻辑
-            if (username == "merchant" && password == "password")
-            {
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, username)
-                };
-
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-
-                return RedirectToAction("Index", "Home");
-            }
-
-            return View();
-        }
-
-        // 处理注销请求
-        [HttpGet("logout")]
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Account");
-        }
-
-        // register
         [HttpPost("register")]
-        public async Task<IActionResult> Register(string username, string password)
+
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            // 这里您应该添加实际的用户注册逻辑
-            if (username == "merchant" && password == "password")
+            var user = new IdentityUser { UserName = model.Username };
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
             {
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, username)
-                };
-
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-
-                return RedirectToAction("Index", "Home");
+                return Ok(new { message = "User registered successfully." });
             }
 
-            return View();
+            return BadRequest(new { errors = result.Errors });
+        }
+
+        [HttpOptions("login")]
+        public IActionResult HandleOptionsRequest()
+        {
+            Response.Headers["Access-Control-Allow-Origin"] = "*";
+            Response.Headers["Access-Control-Allow-Methods"] = "POST";
+            Response.Headers["Access-Control-Allow-Headers"] = "Content-Type";
+            return NoContent();
+        }
+
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        {
+            var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
+            if (result.Succeeded)
+            {
+                Response.Headers["Access-Control-Allow-Origin"] = "http://localhost:3001";
+                return Ok(new { message = "User logged in successfully." });
+            }
+
+            Response.Headers["Access-Control-Allow-Origin"] = "http://localhost:3001";
+            return Unauthorized(new { error = "Invalid username or password." });
         }
     }
 }

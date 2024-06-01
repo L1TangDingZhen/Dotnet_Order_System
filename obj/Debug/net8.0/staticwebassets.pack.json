@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\11427\\Desktop\\C#\\7\\Dotnet_Order_System\\wwwroot\\uploads\\bigmac.jpeg",
+      "PackagePath": "staticwebassets\\uploads\\bigmac.jpeg"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.Order.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.Order.props",
+      "PackagePath": "build\\Order.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.Order.props",
+      "PackagePath": "buildMultiTargeting\\Order.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.Order.props",
+      "PackagePath": "buildTransitive\\Order.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
