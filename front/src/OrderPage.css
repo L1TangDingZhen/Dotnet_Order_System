@@ -3,30 +3,28 @@
   justify-content: space-between;
   align-items: center;
   background-color: transparent;
-  padding: 10px ;
-  /* padding: 10px 20px; */
-  width: 98%;
+  padding: 10px;
+  width: 100%;
   box-sizing: border-box;
 }
 
-.menu-icon, .cart-icon, title {
+.menu-icon, .cart-icon, .title {
   font-size: 2rem;
   cursor: pointer;
-
 }
 
 .title {
   flex-grow: 1;
   font-size: 1.5rem;
-  text-align: left; /* 居中显示标题 */
-  margin: 0 20px; /* 为标题两侧添加一些间距 */
+  text-align: left;
+  margin: 0 20px;
 }
 
 .order-page {
-  background-color: #1e1e1e;
+  background-color: black;
   color: #fff;
-  min-height: 600vh; /* 确保占据整个视口的高度 */
-  width: 100%; /* 占据整个视口的宽度 */
+  min-height: 100vh;
+  width: 100%;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -38,15 +36,14 @@
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 4px;
-  padding: 5px ; /* 添加内边距 */
-  width: 97%; /* 可以根据需要调整 */
-  margin: 0 auto; /* 使搜索框居中 */
+  padding: 5px;
+  width: 98%;
+  margin: 0 auto;
   box-sizing: border-box;
-
 }
 
 .search-icon {
-  margin-right: 10px; /* 图标与输入框之间的间距 */
+  margin-right: 10px;
   font-size: 1.5rem;
   color: #333;
 }
@@ -54,15 +51,510 @@
 .search-bar input {
   border: none;
   outline: none;
-  flex: 1; /* 使输入框占据剩余空间 */
+  flex: 1;
   font-size: 1rem;
 }
 
-/* .order-page {
-  background-color: #1e1e1e;
+.tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto; /* 允许横向滚动 */
+  padding: 8px 0; /* 上下内边距 */
+  margin: 0 10px; /* 左右外边距 */
+}
+
+.tab {
+  background-color: #333;
   color: #fff;
-  min-height: 100vh;
-  padding: 0;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 5px; /* 按钮之间的间距 */
+  white-space: nowrap; /* 防止按钮文字换行 */
+  flex-shrink: 1; /* 不缩小 */
+}
+
+.tab.active {
+  background-color: #007bff;
+}
+
+.menu-list {
   display: flex;
   flex-direction: column;
-} */
+  padding: 20px;
+  width: 100%;
+  background-color: black; /* 确保背景色与页面一致 */
+  box-sizing: border-box;
+}
+
+.category-section {
+  margin-bottom: 20px;
+}
+
+.category-title {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.menu-item {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch; /* 保证子元素高度一致 */
+  background-color: black; /* 确保背景色与页面一致 */
+  margin: 20px auto;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 98%;
+  height: 150px; /* 固定高度 */
+  box-sizing: border-box;
+  border: none; /* 移除边框 */
+  padding: 0; /* 确保没有额外的内边距 */
+}
+
+.menu-item-img {
+  width: 150px; /* 固定宽度，与高度相同，确保正方形 */
+  height: 100%; /* 确保高度与父容器一致 */
+  object-fit: cover;
+  border-radius: 8px 0 0 8px;
+}
+
+.menu-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* 使内容垂直对齐 */
+  padding: 10px;
+  text-align: left; /* 使文本左对齐 */
+  background-color: black; /* 确保背景色与页面一致 */
+}
+
+.menu-info h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.menu-info p {
+  margin: 0;
+  font-size: 1.2rem;
+  margin-top: auto;
+}
+
+.menu-detail-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* background: white(0, 0, 0, 0.5); */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-detail {
+  background: #333;
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  max-height: 70%;
+  width: 80%;
+  height: 70%;
+  position: relative;
+  overflow: auto;
+  text-align: left;
+}
+
+.close-button {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 10%;
+  height: 10%;
+  max-width: 10%;
+}
+
+.menu-detail img {
+  max-width: 100%;
+  height: auto;
+  margin: 50px auto;
+  padding: 0 20px;
+}
+
+.detnamed {
+  text-align: left;
+  margin: 20px;
+  font-size: 1.5rem;
+}
+
+.detnamed p {
+  color: #333;
+}
+
+.comment-section {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.comment-section textarea {
+  width: 95%;
+  height: 100px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+
+.bottom-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  width: 100%;
+}
+
+.quantity-selector {
+  display: flex;
+  align-items: center;
+}
+
+.quantity-btn {
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 0 20px;
+}
+
+.quantity {
+  font-size: 1.2rem;
+  margin: 0 1px;
+}
+
+.detprice {
+  margin: 10px 0;
+  text-align: center;
+  flex-grow: 1;
+}
+
+.add-to-cart-button {
+  background-color: white;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 20px;
+  width: 10%;
+}
+
+.cart-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cart-detail {
+  background: #333;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 1000px;
+  height: 80%;
+  max-height: 800px;
+  text-align: left;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+  height: 5%;
+}
+
+.back-button {
+  background: white;
+  color: black;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  width: 8%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.continue-button {
+  background: white;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  width: 10%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+
+.cart-header, .cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #444;
+  font-size: large;
+}
+
+.cart-header {
+  font-weight: bold;
+}
+
+.cart-column {
+  flex: 1;
+  text-align: center;
+}
+
+.cart-column:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-column button {
+  background: white;
+  color: black;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  margin: 0 5px;
+  width: 10%;
+}
+
+.subtotal {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-top: 1px solid #444;
+  margin-top: auto;
+
+}
+
+.cart-detail p {
+  font-size: medium;
+  color:#888;
+}
+
+
+/* OrderPage.css */
+
+/* OrderPage.css */
+
+/* Overlay styles */
+.cart-overlay,
+.user-info-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Detail container styles */
+.cart-detail,
+.user-info-form {
+  background: #333;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 1000px;
+  height: 80%;
+  max-height: 800px;
+  text-align: left;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Header styles */
+.cart-detail-header,
+.user-info-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+  height: 5%;
+}
+
+/* Button styles */
+.back-button,
+.user-info-form .back-button {
+  background: white;
+  color: black;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  width: 8%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.continue-button {
+  background: white;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  width: 10%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* Form styles */
+.user-info-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-info-form label {
+  margin-top: 10px;
+}
+
+.user-info-form input {
+  background: #444;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  color: white;
+  margin-top: 5px;
+}
+
+.user-info-form button[type="submit"] {
+  background: white;
+  color: black;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-top: 20px;
+  align-self: flex-end;
+}
+
+/* Cart item styles */
+.cart-header, .cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #444;
+  font-size: large;
+}
+
+.cart-header {
+  font-weight: bold;
+}
+
+.cart-column {
+  flex: 1;
+  text-align: center;
+}
+
+.cart-column:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-column button {
+  background: white;
+  color: black;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  margin: 0 5px;
+  width: 10%;
+  max-height: 800px;
+  height: auto;
+}
+
+/* Subtotal styles */
+.subtotal {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-top: 1px solid #444;
+  margin-top: auto;
+}
+
+.cart-detail p {
+  font-size: medium;
+  color: #888;
+}
+
+
+
+.user-info-form .back-button {
+  color: black;
+  height: 5%;
+}
+.user-info-form nameb {
+  margin-top: 20%;
+
+}
+
+.user-info-form label {
+  margin-right: 5%;
+  color: #888;
+}
+
+.user-info-form input {
+  width: 40%;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  border: #fff;
+}
+
+.user-info-form subb {
+  background: white;
+  color: black;
+  width: 40%;
+}
