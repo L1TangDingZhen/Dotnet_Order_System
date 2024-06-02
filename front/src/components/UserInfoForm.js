@@ -1,10 +1,12 @@
-// src/components/UserInfoForm.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const UserInfoForm = ({ onSubmit, onBack }) => {
+const UserInfoForm = ({ onSubmit, onBack, selectedTableId, setSelectedTableId }) => {
   const [name, setName] = useState('');
-  const [tableId, setTableId] = useState(''); // 新增桌子 ID 状态
+  const [tableId, setTableId] = useState(selectedTableId.toString());
 
+  useEffect(() => {
+    setTableId(selectedTableId.toString());
+  }, [selectedTableId]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,12 +27,17 @@ const UserInfoForm = ({ onSubmit, onBack }) => {
           />
         </div>
         <div className='idb'>
-          <label>Table ID:</label> {/* 新增桌子 ID 输入框 */}
-            <input type="text" value={tableId} onChange={(e) => {
+        <label>Table ID:</label>
+        <input
+          type="text"
+          value={tableId}
+          onChange={(e) => {
             setTableId(e.target.value);
-            setSelectedTableId(e.target.value); // 更新父组件中的桌子 ID
-          }} required />
-          </div>
+            setSelectedTableId(parseInt(e.target.value));
+          }}
+          required
+        />
+      </div>
         <button type="submit" name='subb'>Place Order & Pay at Counter</button>
       </form>
     </div>

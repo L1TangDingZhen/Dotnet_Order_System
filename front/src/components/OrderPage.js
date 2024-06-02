@@ -12,13 +12,13 @@ const OrderPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isUserInfoFormOpen, setIsUserInfoFormOpen] = useState(false); // 控制用户信息表单显示
-  const [selectedTableId, setSelectedTableId] = useState(1); // Example table ID, you might want to adjust this
+  const [selectedTableId, setSelectedTableId] = useState(1);
 
   const handleAddToCart = () => {
     const newItem = {
       menu: selectedMenu,
       quantity: quantity,
-      comment: selectedMenu.comment,
+      comment: comment,
       price: selectedMenu.price, // 添加价格信息
     };
 
@@ -33,40 +33,67 @@ const OrderPage = () => {
 
     setSelectedMenu(null);
     setQuantity(1);
+    setComment('');
   };
 
   const handleUserInfoSubmit = async (userInfo) => {
-    try {
-      const response = await fetch('http://localhost:5000/api/customer/order', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          items: cartItems.map(item => ({
-            menuId: item.menu.id,
+    const orderData = {
+        name: userInfo.name,
+        tableid: parseInt(userInfo.tableId), // 将 tableNumber 转换为整数并传递给后端
+        items: cartItems.map(item => ({
             quantity: item.quantity,
             comment: item.comment,
-            price: item.price, // 传递价格信息
-            orderTime: new Date().toISOString(), // 传递当前时间
-            tableId: selectedTableId // 传递桌子ID
-          })),
-          tableId: selectedTableId, // 添加桌子ID到订单信息中
-          userInfo: userInfo, // 添加用户信息
-        }),
-      });
+            price: item.price,
+            id: item.menu.id
+        })),
+        total: cartItems.reduce((total, item) => total + item.price * item.quantity, 0),
+        orderTime: new Date().toISOString(),
+        isPaid: false
+    };
 
-      if (response.ok) {
-        setCartItems([]);
-        setIsUserInfoFormOpen(false); // Close the user info form after submission
-      } else {
-        // Handle order submission failure
-        alert('Failed to submit order. Please try again.');
-      }
+    console.log('Submitting order:', orderData); // 记录提交的数据
+
+    try {
+        const response = await fetch('http://localhost:5000/api/customer/order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderData),
+        });
+
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('Order submitted successfully:', responseData); // 记录服务器的响应
+            setCartItems([]);
+            setIsUserInfoFormOpen(false); // 关闭用户信息表单
+            alert('Order submitted successfully!');
+
+            // 更新桌子的状态为不可用
+            const tableResponse = await fetch(`http://localhost:5000/api/tables/${userInfo.tableId}/status`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ isAvailable: false }),
+            });
+
+            if (!tableResponse.ok) {
+                console.error('Failed to update table status');
+                alert('Failed to update table status. Please try again.');
+            }
+        } else {
+            const errorData = await response.json();
+            console.error('Failed to submit order:', errorData);
+            alert('Failed to submit order. Please try again.');
+        }
     } catch (error) {
-      console.error('Error submitting order:', error);
+        console.error('Error submitting order:', error);
+        alert('Error submitting order. Please try again.');
     }
-  };
+};
+
+
 
   const handleContinue = () => {
     setIsUserInfoFormOpen(true); // 打开用户信息表单
@@ -170,8 +197,8 @@ const OrderPage = () => {
             <div className="comment-section">
               <textarea
                 placeholder="Special Instruction"
-                value={selectedMenu.comment}
-                onChange={(e) => setSelectedMenu({ ...selectedMenu, comment: e.target.value })}
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
               ></textarea>
             </div>
             <div className="bottom-container">
@@ -192,9 +219,14 @@ const OrderPage = () => {
         </div>
       )}
       {isUserInfoFormOpen && (
-        <div className="user-info-overlay">
-          <UserInfoForm onSubmit={handleUserInfoSubmit} onBack={handleBackFromUserInfo} />
-        </div>
+      <div className="user-info-overlay">
+        <UserInfoForm
+          onSubmit={handleUserInfoSubmit}
+          onBack={handleBackFromUserInfo}
+          selectedTableId={selectedTableId}
+          setSelectedTableId={setSelectedTableId}
+        />
+      </div>
       )}
     </div>
   );

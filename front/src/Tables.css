@@ -1,108 +1,266 @@
 .table-container {
-    width: 80%;
-    margin: 0 auto;
-    text-align: center;
+  width: 80%;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 20px;
+}
+
+.tables {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.table {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  width: 100px;
+  height: 100px; /* 保持正方形 */
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white; /* 默认字体颜色为白色 */
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.table:hover {
+  transform: scale(1.05);
+}
+
+.available {
+  background-color: #28a745; /* 绿色背景 */
+}
+
+.unavailable {
+  background-color: #dc3545; /* 红色背景 */
+}
+
+.add-table {
+  cursor: pointer;
+  font-size: 24px;
+  color: #007bff;
+  border: 1px dashed #007bff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.add-table:hover {
+  background-color: #f0f8ff;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.add-table-form,
+.edit-table-form,
+.order-details,
+.confirm-dialog {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+  animation: fadeIn 0.5s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: black; /* 确保文本颜色为黑色 */
+}
+
+.add-table-form input[type="text"],
+.edit-table-form input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  color: black; /* 确保文本颜色为黑色 */
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.button-group button {
+  padding: 10px 20px;
+  font-size: 14px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  margin: 5px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.button-group button:hover {
+  background-color: #0056b3;
+}
+
+.add-table-form label,
+.edit-table-form label {
+  color: black;
+}
+
+.order-details h4,
+.order-details ul {
+  text-align: left;
+  margin: 10px 0;
+  color: black; /* 确保文本颜色为黑色 */
+}
+
+.order-details ul {
+  list-style: none;
+  padding: 0;
+}
+
+.order-details li {
+  padding: 5px 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
   }
-  
-  .tables {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
-  
-  .table {
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 100px;
-    height: 100px; /* 保持正方形 */
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white; /* 默认字体颜色为白色 */
+}
+
+@media (max-width: 600px) {
+  .add-table-form,
+  .edit-table-form,
+  .order-details,
+  .confirm-dialog {
+    width: 90%;
   }
-  
-  .available {
-    background-color: #28a745; /* 绿色背景 */
+
+  .button-group {
+    flex-direction: column;
   }
-  
-  .unavailable {
-    background-color: #dc3545; /* 红色背景 */
-  }
-  
-  .add-table {
-    cursor: pointer;
-    font-size: 24px;
-    color: #007bff;
-    border: 1px dashed #007bff;
-  }
-  
-  .add-table:hover {
-    background-color: #f0f8ff;
-  }
-  
-  .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
+
+  .button-group button {
     width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    margin: 5px 0;
   }
-  
-  .add-table-form {
-    background: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    width: 300px;
-    text-align: center;
-    animation: fadeIn 0.5s;
-  }
-  
-  .add-table-form input[type="text"] {
-    width: 100%;
-    padding: 5px;
-    margin-bottom: 10px;
-    font-size: 16px;
-  }
-  
-  .add-table-form .button-group {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .add-table-form button {
-    padding: 5px 10px;
-    font-size: 14px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    margin: 5px;
-  }
-  
-  .add-table-form button:hover {
-    background-color: #0056b3;
-  }
-  
-  .add-table-form label {
-    color: black;
-  }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: scale(0.9);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-  
+}
+
+.order-details {
+  background: #333;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 1000px;
+  height: 80%;
+  max-height: 800px;
+  text-align: left;
+  color: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+  height: 5%;
+}
+
+.close-button {
+  background: white;
+  color: black;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  width: 8%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.cart-header,
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #444;
+  font-size: large;
+}
+
+.cart-header {
+  font-weight: bold;
+}
+
+.cart-column {
+  flex: 1;
+  text-align: center;
+}
+
+.cart-column:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-column button {
+  background: white;
+  color: black;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  margin: 0 5px;
+  width: 10%;
+}
+
+.subtotal {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-top: 1px solid #444;
+  margin-top: auto;
+}
+
+.order-details .button-group {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.order-details .button-group button {
+  padding: 10px 20px;
+  font-size: 14px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-left: 10px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.order-details .button-group button:hover {
+  background-color: #0056b3;
+}

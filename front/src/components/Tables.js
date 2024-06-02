@@ -6,11 +6,17 @@ const Table = () => {
   const [newTableName, setNewTableName] = useState('');
   const [isAvailable, setIsAvailable] = useState(false);
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [isEditFormVisible, setIsEditFormVisible] = useState(false); // 添加这一行
-  const [isOrderDetailsVisible, setIsOrderDetailsVisible] = useState(false); // 添加这一行
-  const [selectedTable, setSelectedTable] = useState(null); // 添加这一行
-  const [latestOrder, setLatestOrder] = useState(null); // 添加这一行
-  const [isConfirmVisible, setIsConfirmVisible] = useState(false); // 添加确认对话框状态
+  const [isEditFormVisible, setIsEditFormVisible] = useState(false);
+  const [isOrderDetailsVisible, setIsOrderDetailsVisible] = useState(false);
+  const [selectedTable, setSelectedTable] = useState(null);
+  const [latestOrder, setLatestOrder] = useState(null);
+  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+  const [menuNames, setMenuNames] = useState({});
+  const [loadingItems, setLoadingItems] = useState(true);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+
 
   useEffect(() => {
     fetchTables();
@@ -23,6 +29,20 @@ const Table = () => {
       setTables(data);
     } catch (error) {
       console.error('Error fetching tables:', error);
+    }
+  };
+
+  const fetchMenuName = async (menuId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/merchant/menu/${menuId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setMenuNames((prevNames) => ({ ...prevNames, [menuId]: data.name }));
+      } else {
+        console.error('Failed to fetch menu name');
+      }
+    } catch (error) {
+      console.error('Error fetching menu name:', error);
     }
   };
 
@@ -42,9 +62,9 @@ const Table = () => {
       });
 
       if (response.ok) {
-        fetchTables(); // Refresh table list after adding
-        setNewTableName(''); // Clear the input field
-        setIsFormVisible(false); // Hide the form after adding
+        fetchTables();
+        setNewTableName('');
+        setIsFormVisible(false);
         alert('Table created successfully!');
       } else {
         console.error('Failed to add table');
@@ -60,15 +80,92 @@ const Table = () => {
     setIsAvailable(false);
   };
 
-  const handlePayOrder = async () => {
+  const handleSearch = async (event) => {
+    const term = event.target.value;
+    setSearchTerm(term);
+
+    if (term.trim() !== '') {
+      try {
+        const response = await fetch(`http://localhost:5000/api/merchant/menu/search?term=${term}`);
+        if (response.ok) {
+          const data = await response.json();
+          setSearchResults(data);
+        } else {
+          console.error('Failed to search menu items');
+        }
+      } catch (error) {
+        console.error('Error searching menu items:', error);
+      }
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  const handleAddItem = (menuItem) => {
+    const newItem = {
+      menuId: menuItem.id,
+      quantity: 1,
+      price: menuItem.price,
+    };
+    setLatestOrder({ ...latestOrder, items: [...latestOrder.items, newItem] });
+    setSearchTerm('');
+    setSearchResults([]);
+  };
+
+
+  const handleUpdateItems = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/orders/${latestOrder.id}/pay`, {
+      const response = await fetch(`http://localhost:5000/api/merchant/order/${latestOrder.id}/items`, {
         method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(latestOrder.items),
       });
 
       if (response.ok) {
-        setIsOrderDetailsVisible(false);
+        setIsEditMode(false);
         fetchTables();
+      } else {
+        console.error('Failed to update items');
+      }
+    } catch (error) {
+      console.error('Error updating items:', error);
+    }
+  };
+
+  const handleQuantityChange = (itemId, newQuantity) => {
+    if (newQuantity < 1) {
+      handleRemoveItem(itemId);
+    } else {
+      const updatedItems = latestOrder.items.map(item => {
+        if (item.id === itemId) {
+          return { ...item, quantity: newQuantity };
+        }
+        return item;
+      });
+      setLatestOrder({ ...latestOrder, items: updatedItems });
+    }
+  };
+
+  const handleRemoveItem = (itemId) => {
+    const updatedItems = latestOrder.items.filter(item => item.id !== itemId);
+    setLatestOrder({ ...latestOrder, items: updatedItems });
+  };
+
+  const handlePayOrder = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/merchant/order/${latestOrder.id}/pay`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...latestOrder, isPaid: true }),
+      });
+  
+      if (response.ok) {
+        setIsOrderDetailsVisible(false);
+        fetchTables(); // 重新获取桌子列表
       } else {
         console.error('Failed to pay order');
       }
@@ -79,7 +176,7 @@ const Table = () => {
 
   const handleCancelOrder = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/orders/${latestOrder.id}`, {
+      const response = await fetch(`http://localhost:5000/api/merchant/order/${latestOrder.id}`, {
         method: 'DELETE',
       });
 
@@ -150,24 +247,31 @@ const Table = () => {
         const data = await response.json();
   
         if (table.isAvailable) {
-          // 如果桌子可用,显示修改桌子属性的表单
           setSelectedTable(table);
           setIsEditFormVisible(true);
         } else {
           if (data && !data.isPaid) {
-            // 如果有未支付的订单,显示订单信息
             setSelectedTable(table);
             setLatestOrder(data);
             setIsOrderDetailsVisible(true);
+
+            const menuPromises = data.items.map(item => {
+              if (item.menuId !== 0 && !menuNames[item.menuId]) {
+                return fetchMenuName(item.menuId);
+              }
+              return null;
+            });
+
+            await Promise.all(menuPromises);
+            setLoadingItems(false);
+
           } else {
-            // 如果没有未支付的订单或订单数据为空,显示修改桌子属性的表单
             setSelectedTable(table);
             setIsEditFormVisible(true);
           }
         }
       } else {
         if (response.status === 404) {
-          // 如果没有找到订单,显示修改桌子属性的表单
           setSelectedTable(table);
           setIsEditFormVisible(true);
         } else {
@@ -249,27 +353,71 @@ const Table = () => {
         </div>
       )}
 
-      {isOrderDetailsVisible && (
-        <div className="overlay">
-          <div className="order-details animated">
-            <h3>Latest Order Details</h3>
-            <p>Menu Item: {latestOrder.menu.name}</p>
-            <p>Quantity: {latestOrder.quantity}</p>
-            <p>Order Time: {new Date(latestOrder.orderTime).toLocaleString()}</p>
-            <p>Paid: {latestOrder.isPaid ? 'Yes' : 'No'}</p>
-            <div className="button-group">
-              {!latestOrder.isPaid && (
-                <>
-                  <button onClick={handlePayOrder}>Pay</button>
-                  <button onClick={handleCancelOrder}>Cancel</button>
-                </>
-              )}
-              <button onClick={confirmDeleteTable}>Delete Table</button>
-              <button onClick={() => setIsOrderDetailsVisible(false)}>Close</button>
+{isOrderDetailsVisible && latestOrder && (
+      <div className="overlay">
+        <div className="order-details animated">
+        {isEditMode && (
+            <div className="search-container">
+              <input
+                type="text"
+                placeholder="Search menu items"
+                value={searchTerm}
+                onChange={handleSearch}
+              />
+              {searchResults.map(item => (
+                <div key={item.id} className="search-result" onClick={() => handleAddItem(item)}>
+                  {item.name} - ${item.price.toFixed(2)}
+                </div>
+              ))}
             </div>
-          </div>
+          )}
+          {latestOrder.items.map(item => (
+            <div key={item.id} className="cart-item">
+              <span className="cart-column">{menuNames[item.menuId] || 'Loading...'}</span>
+              <span className="cart-column">
+                {isEditMode ? (
+                  <>
+                    <button onClick={() => handleQuantityChange(item.id, item.quantity - 1)}>-</button>
+                    {item.quantity}
+                    <button onClick={() => handleQuantityChange(item.id, item.quantity + 1)}>+</button>
+                  </>
+                ) : (
+                  item.quantity
+                )}
+              </span>
+              <span className="cart-column">${(item.price * item.quantity).toFixed(2)}</span>
+              {isEditMode && (
+                <span className="cart-column">
+                  <button onClick={() => handleRemoveItem(item.id)}>Delete</button>
+            </span>
+          )}
         </div>
-      )}
+      ))}
+      <div className="subtotal">
+        <span>Subtotal</span>
+        <span>${latestOrder.total.toFixed(2)}</span>
+      </div>
+      <div className="button-group">
+        {!latestOrder.isPaid && (
+          <>
+            <button onClick={handlePayOrder}>Pay</button>
+            {isEditMode ? (
+              <>
+                <button onClick={handleUpdateItems}>Save</button>
+                <button onClick={() => setIsEditMode(false)}>Cancel</button>
+              </>
+            ) : (
+              <button onClick={() => setIsEditMode(true)}>Edit</button>
+            )}
+          </>
+        )}
+        {latestOrder.isPaid && (
+          <button onClick={confirmDeleteTable}>Delete Table</button>
+        )}
+      </div>
+    </div>
+  </div>
+)}
 
       {isConfirmVisible && (
         <div className="overlay">
